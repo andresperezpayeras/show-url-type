@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -87,46 +91,68 @@ public class Get_URL_show_type_Activity extends AppCompatActivity {
 
             publishProgress("Make URL..."); // Calls onProgressUpdate()
 
-                // Do your long operations here and return the result
-                URL url= null;
-                try {
-                    url = new URL(params[0]);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    ret = e.getMessage();
-                    return ret;
-                } catch (Exception e){
-                    e.printStackTrace();
-                    ret = e.getMessage();
-                    return ret;
-                }
-                publishProgress("Connecting..."); // Calls onProgressUpdate()
-                try {
-                    con = url.openConnection();
+            // Do your long operations here and return the result
+            URL url= null;
+            try {
+                url = new URL(params[0]);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                ret = e.getMessage();
+                return ret;
+            } catch (Exception e){
+                e.printStackTrace();
+                ret = e.getMessage();
+                return ret;
+            }
+            publishProgress("Connecting..."); // Calls onProgressUpdate()
+            try {
+                con = url.openConnection();
 
-                    } catch (IOException e) {
-                    Logger.getLogger(URL.class.getName()).log(Level.SEVERE, null, e);
-                    e.printStackTrace();
-                    ret = e.getMessage();
-                    return ret;
-                } catch (Exception e){
-                    e.printStackTrace();
-                    ret = e.getMessage();
-                    return ret;
-                }
+            } catch (IOException e) {
+                Logger.getLogger(URL.class.getName()).log(Level.SEVERE, null, e);
+                e.printStackTrace();
+                ret = e.getMessage();
+                return ret;
+            } catch (Exception e){
+                e.printStackTrace();
+                ret = e.getMessage();
+                return ret;
+            }
 
-                try {
-                    ret = con.getContentType();
-                } catch (Exception e){
-                    e.printStackTrace();
-                    ret = e.getMessage();
-                    return ret;
-                }
+            publishProgress("Get content type..."); // Calls onProgressUpdate()
+
+            try {
+                ret = con.getContentType();
+            } catch (Exception e){
+                e.printStackTrace();
+                ret = e.getMessage();
+                return ret;
+            }
+            ret="tipo: ".concat(ret);
+
+            publishProgress("Get content length..."); // Calls onProgressUpdate()
+
+            long long_date;
+            try {
+
+                long_date = con.getDate();
+
+            } catch (Exception e){
+                e.printStackTrace();
+                ret = e.getMessage();
+                return ret;
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+
+
+            ret = ret.concat("\n");
+            ret = ret.concat(dateFormat.format(long_date));
+            //ret = ret.concat(" ");
 
             publishProgress("Exiting..."); // Calls onProgressUpdate()
 
             if (ret == null) ret="error en URL";
-            else ret="tipo: ".concat(ret);
 
             return ret;
         }
